@@ -1,1 +1,14 @@
 @import "tailwindcss";
+/* @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Fira+Code:wght@300..700&family=Lexend+Deca:wght@100..900&family=Lexend:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"); */
+
+@theme {
+  --color-bg: #030303;
+  --color-primary: #43b17e;
+  --color-primary-hover: #369667;
+  --color-white: #f3f3f3;
+  --color-text: #050505;
+  --color-text-contrast: #f3f3f3;
+}
+/* body {
+  font-family: "Fira Code", monospace;
+} */
