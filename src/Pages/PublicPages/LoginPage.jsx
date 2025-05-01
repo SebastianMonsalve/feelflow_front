@@ -1,6 +1,6 @@
 import React from "react";
-import Input from "../Components/Input.jsx";
-import Button from "../Components/Button.jsx";
+import Input from "../../Components/Input.jsx";
+import Button from "../../Components/Button.jsx";
 import { useNavigate, Link } from "react-router-dom";
 
 const LoginPage = () => {
@@ -18,8 +18,7 @@ const LoginPage = () => {
           Bienvenido de nuevo
         </h2>
         <p className="text-text-contrast text-md mt-4 mb-8">
-          Conecta con tu diario emocional. Registra tu día, tu ánimo, tus metas
-          y acompáñate con la música que elegiste.
+          Conecta con tu diario emocional.
         </p>
         <form action="" className="flex flex-col gap-2 lg:gap-4">
           <Input

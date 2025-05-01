@@ -1,20 +1,32 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Welcome from "../Pages/Welcome.jsx";
-import LoginPage from "../Pages/LoginPage.jsx";
-import RegisterPage from "../Pages/RegisterPage.jsx";
+import PublicRoutes from "./PublicRoutes.jsx";
+import PrivateRoutes from "./PrivateRoutes.jsx";
+import { AuthProvider } from "../Context/AuthContext.jsx";
+import { ToastContainer, toast } from "react-toastify";
 
 function AppRouter() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Welcome />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/recovery" element={<h1>Recovery</h1>} />
-        <Route path="/profile" element={<h1>Profile</h1>} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/*" element={<PublicRoutes />} />
+          <Route path="/app/*" element={<PrivateRoutes />} />
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        closeOnClick={false}
+        draggable={true}
+        progress={undefined}
+        closeButton={false}
+        newestOnTop={true}
+        pauseOnHover={false}
+        theme="dark"
+      />
+    </AuthProvider>
   );
 }
 
