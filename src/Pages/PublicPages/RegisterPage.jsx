@@ -1,4 +1,4 @@
-import React, { use, useEffect } from "react";
+import React, { useEffect } from "react";
 import Input from "../../Components/Input.jsx";
 import Button from "../../Components/Button.jsx";
 import { useNavigate, Link } from "react-router-dom";
@@ -8,12 +8,7 @@ import { toast } from "react-toastify";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    clearErrors,
-  } = useForm();
+  const { register, handleSubmit, clearErrors } = useForm();
   const { signup, isAuthenticated, errors: registerErrors } = useAuth();
 
   useEffect(() => {
@@ -23,25 +18,39 @@ const RegisterPage = () => {
     }
   }, [isAuthenticated]);
 
-  const onSubmit = handleSubmit(async (values) => {
+  const onSubmit = async (values) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+    if (!emailRegex.test(values.email)) {
+      toast.error("Ingresa un correo electrónico válido.");
+      return;
+    }
+    if (!passwordRegex.test(values.password)) {
+      toast.error(
+        "La contraseña debe tener al menos 8 caracteres, una letra y un número."
+      );
+      return;
+    }
+    if (values.password !== values.confirmPassword) {
+      toast.error("Las contraseñas no coinciden.");
+      return;
+    }
     clearErrors();
     await signup(values);
-  });
+  };
 
-  useEffect(() => {
-    if (errors.username) {
-      toast.warning("Ingresa tu nombre para continuar.");
+  const onInvalid = (formErrors) => {
+    if (
+      formErrors.username ||
+      formErrors.email ||
+      formErrors.password ||
+      formErrors.confirmPassword
+    ) {
+      toast.warning("Completa todos los campos antes de continuar.");
     }
-    if (errors.email) {
-      toast.warning("Necesitamos tu correo electrónico.");
-    }
-    if (errors.password) {
-      toast.warning("Crea una contraseña para tu cuenta.");
-    }
-    if (errors.confirmPassword) {
-      toast.warning("Repite tu contraseña para continuar.");
-    }
-  });
+  };
+
   useEffect(() => {
     if (registerErrors && registerErrors.length > 0) {
       registerErrors.forEach((error, i) => {
@@ -65,7 +74,7 @@ const RegisterPage = () => {
         <p className="text-text-contrast text-md mt-4 mb-8">
           Comienza tu viaje personal registrando una cuenta.
         </p>
-        <form className="flex flex-col gap-2 lg:gap-4" onSubmit={onSubmit}>
+        <form className="flex flex-col gap-2">
           <Input
             placeholder="Ingresa tu nombre"
             label="Nombre"
@@ -88,7 +97,11 @@ const RegisterPage = () => {
             label="Confirmar contraseña"
             {...register("confirmPassword", { required: true })}
           />
-          <Button type="submit" label="Crear Cuenta" />
+          <Button
+            type="button"
+            label="Crear Cuenta"
+            onClick={handleSubmit(onSubmit, onInvalid)}
+          />
           <div className="flex flex-col lg:flex-row gap-2 w-full items-center justify-center mt-2">
             <p className="text-text-contrast text-md whitespace-nowrap">
               ¿Ya tienes una cuenta?
