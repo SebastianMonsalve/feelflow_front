@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../../Components/Input.jsx";
 import Button from "../../Components/Button.jsx";
 import { useNavigate, Link } from "react-router-dom";
@@ -8,8 +8,37 @@ import { toast } from "react-toastify";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit, clearErrors } = useForm();
   const { signup, isAuthenticated, errors: registerErrors } = useAuth();
+
+  const onSubmit = async (values) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+    setIsLoading(true);
+    clearErrors();
+    try {
+      if (!emailRegex.test(values.email)) {
+        toast.error("Ingresa un correo electrónico válido.");
+        return;
+      }
+      if (!passwordRegex.test(values.password)) {
+        toast.error(
+          "La contraseña debe tener al menos 8 caracteres, una letra y un número."
+        );
+        return;
+      }
+      if (values.password !== values.confirmPassword) {
+        toast.error("Las contraseñas no coinciden.");
+        return;
+      }
+
+      await signup(values);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -17,28 +46,6 @@ const RegisterPage = () => {
       toast.success("Bienvenido a tu espacio personal.");
     }
   }, [isAuthenticated]);
-
-  const onSubmit = async (values) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-    if (!emailRegex.test(values.email)) {
-      toast.error("Ingresa un correo electrónico válido.");
-      return;
-    }
-    if (!passwordRegex.test(values.password)) {
-      toast.error(
-        "La contraseña debe tener al menos 8 caracteres, una letra y un número."
-      );
-      return;
-    }
-    if (values.password !== values.confirmPassword) {
-      toast.error("Las contraseñas no coinciden.");
-      return;
-    }
-    clearErrors();
-    await signup(values);
-  };
 
   const onInvalid = (formErrors) => {
     if (
@@ -98,7 +105,7 @@ const RegisterPage = () => {
             {...register("confirmPassword", { required: true })}
           />
           <Button
-            type="button"
+            loading={isLoading}
             label="Crear Cuenta"
             onClick={handleSubmit(onSubmit, onInvalid)}
           />
@@ -110,7 +117,7 @@ const RegisterPage = () => {
               className="text-primary hover:text-primary-hover text-md font-bold cursor-pointer whitespace-nowrap"
               to="/login"
             >
-              Inicia sesión aquí.
+              Inicia sesión aquí
             </Link>
           </div>
         </form>

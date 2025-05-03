@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../../Components/Input.jsx";
 import Button from "../../Components/Button.jsx";
 import { useAuth } from "../../Context/AuthContext.jsx";
@@ -8,13 +8,26 @@ import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit, clearErrors } = useForm();
-  const { signin, errors: loginErrors } = useAuth();
+  const { signin, isAuthenticated, errors: loginErrors } = useAuth();
 
   const onSubmit = async (values) => {
-    clearErrors();
-    signin(values);
+    setIsLoading(true);
+    try {
+      clearErrors();
+      await signin(values);
+    } finally {
+      setIsLoading(false);
+    }
   };
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/app/home");
+      toast.success("Bienvenido a tu espacio personal.");
+    }
+  }, [isAuthenticated]);
+
   const onInvalid = (formErrors) => {
     if (formErrors.email || formErrors.password) {
       toast.warning("Completa todos los campos antes de continuar.");
@@ -56,7 +69,7 @@ const LoginPage = () => {
             {...register("password", { required: true })}
           />
           <Button
-            type="button"
+            loading={isLoading}
             label="Iniciar Sesión"
             onClick={handleSubmit(onSubmit, onInvalid)}
           />
@@ -76,7 +89,7 @@ const LoginPage = () => {
               className="text-primary hover:text-primary-hover text-md font-bold cursor-pointer whitespace-nowrap"
               to="/register"
             >
-              Regístrate gratis.
+              Regístrate gratis
             </Link>
           </div>
         </form>
