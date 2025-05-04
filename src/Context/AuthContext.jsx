@@ -48,21 +48,17 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     async function checkLogin() {
-      const cookies = Cookies.get();
-
-      if (!cookies.token) {
-        setIsAuthenticated(false);
-        return setUser(null);
-      }
       try {
-        const res = await verifyTokenRequest(cookies.token);
-        if (!res.data) return setIsAuthenticated(false);
+        const res = await verifyTokenRequest(); // ya incluye las cookies automáticamente
+        setIsAuthenticated(true);
+        setUser(res.data);
       } catch (error) {
-        console.log(error);
+        console.log("Error verificando token:", error);
         setIsAuthenticated(false);
         setUser(null);
       }
     }
+
     checkLogin();
   }, []);
 
