@@ -45,7 +45,7 @@ const LoginPage = () => {
     <div className="w-full h-full flex flex-col justify-center items-center relative">
       <div
         className="absolute top-0 md:top-1 left-0 md:left-1"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/", { replace: true })}
       >
         <i className="fal fa-long-arrow-left text-text-contrast text-3xl cursor-pointer" />
       </div>

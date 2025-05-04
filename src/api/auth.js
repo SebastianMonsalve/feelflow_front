@@ -1,7 +1,7 @@
-import axios from "axios";
-import { VITE_API_URL } from "../config.js";
+import axios from "./axiosInstance.js";
 
-export const registerRequest = (user) =>
-  axios.post(`${VITE_API_URL}/register`, user);
+export const registerRequest = (user) => axios.post(`/register`, user);
 
-export const loginRequest = (user) => axios.post(`${VITE_API_URL}/login`, user);
+export const loginRequest = (user) => axios.post(`/login`, user);
+
+export const verifyTokenRequest = () => axios.get(`/verify`);

@@ -71,7 +71,7 @@ const RegisterPage = () => {
       <div className="absolute top-0 md:top-1 left-0 md:left-1">
         <i
           className="fal fa-long-arrow-left text-text-contrast text-3xl cursor-pointer"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/", { replace: true })}
         />
       </div>
       <div className="w-full p-2 lg:w-4/5">

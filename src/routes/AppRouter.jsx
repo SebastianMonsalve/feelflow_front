@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PublicRoutes from "./PublicRoutes.jsx";
 import PrivateRoutes from "./PrivateRoutes.jsx";
 import { AuthProvider } from "../Context/AuthContext.jsx";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 function AppRouter() {
   return (
