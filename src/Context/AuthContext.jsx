@@ -4,7 +4,6 @@ import {
   loginRequest,
   verifyTokenRequest,
 } from "../api/auth.js";
-import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
 
@@ -20,11 +19,11 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const signup = async (user) => {
     try {
       const res = await registerRequest(user);
-      console.log(res.data);
       setUser(res.data);
       setIsAuthenticated(true);
     } catch (error) {
@@ -35,9 +34,8 @@ export const AuthProvider = ({ children }) => {
   const signin = async (user) => {
     try {
       const res = await loginRequest(user);
-      console.log(res.data);
-      setUser(res.data);
       setIsAuthenticated(true);
+      setUser(res.data);
     } catch (error) {
       if (Array.isArray(error.response.data)) {
         return setErrors(error.response.data);
@@ -49,13 +47,14 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     async function checkLogin() {
       try {
-        const res = await verifyTokenRequest(); // ya incluye las cookies automáticamente
+        const res = await verifyTokenRequest(); // ✅ se envía automáticamente
         setIsAuthenticated(true);
         setUser(res.data);
       } catch (error) {
-        console.log("Error verificando token:", error);
         setIsAuthenticated(false);
         setUser(null);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -64,7 +63,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ signup, signin, user, isAuthenticated, errors }}
+      value={{ signup, signin, loading, user, isAuthenticated, errors }}
     >
       {children}
     </AuthContext.Provider>
